@@ -1,0 +1,192 @@
+<ion-header>
+
+  <ion-navbar hideBackButton="{{loggedin?'true':'false'}}">
+    <ion-title>{{loggedin?'Dashboard':'Login'}}</ion-title>
+    <ion-buttons end *ngIf="loggedin">
+    	<button ion-button icon-only (click)="logout()">
+    		<ion-icon name="power"></ion-icon>
+    	</button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+	<ion-grid  *ngIf="!loggedin">
+		<form (ngSubmit)="loginToApp($event)" [formGroup]="loginForm">
+	  		<ion-row>
+	    		<ion-col col-12>
+	    			<ion-item>
+					    <ion-label>Email</ion-label>
+					    <ion-input type="email" formControlName="email" [(ngModel)]="login_email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required></ion-input>
+
+					    <small [hidden]="loginForm.controls.email.valid || (loginForm.controls.email.pristine && !submitted)">
+					        <small  *ngIf="loginForm.controls.email.errors && loginForm.controls.email.errors.required">
+					            Email is required
+					        </small>
+					        <small  *ngIf="loginForm.controls.email.errors && loginForm.controls.email.errors.pattern">
+					            Email is invalid
+					        </small>
+					    </small>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	  		<ion-row>
+	    		<ion-col col-12>
+	    			<ion-item>
+					    <ion-label>Password</ion-label>
+					    <ion-input type="password" formControlName="password" [(ngModel)]="login_password" required></ion-input>
+
+					    <small>
+					    	<small [hidden]="loginForm.controls.password.valid || (loginForm.controls.password.pristine && !submitted)">
+					        *password required and min 8 characters
+					    	</small>
+					    </small>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	  		<ion-row>
+	    		<ion-col col-12>
+	    			<button block ion-button type="submit" [disabled]="!loginForm.valid">Login</button>
+	    		</ion-col>
+	    	</ion-row>
+		</form>
+
+		<button ion-button center (click)="facebookLogin()">
+    		Log In with Facebook
+  		</button>
+
+  		<ion-row>
+    		<ion-col col-12 class="text-center">
+    			Don't have account? <button ion-button (click)="gotoRegister()" clear>Register</button> now
+    		</ion-col>
+    	</ion-row>
+
+	</ion-grid>
+
+	<ion-grid *ngIf="loggedin">
+  		<ion-row>
+    		<ion-col col-12>
+    			<img src="{{yourLoggedinImage}}" class="profile-pic">
+				<h1 class="yourname">Welcome {{yourLoggedinName}}</h1>
+				<p class="yourmail">Your Mail id is <span>{{yourLoggedinEmail}}</span> 
+				<a href="javascript:void(0)" (click)="showUpdatForm()">{{editForm?'Close':'Edit'}}</a></p>
+			</ion-col>
+		</ion-row>
+
+		<!-- update account info form -->
+		<form (ngSubmit)="updateMyEmail($event)" *ngIf="editForm" [formGroup]="updateForm">
+			<ion-row class="disp-none">
+	    		<ion-col col-12>
+	    			<ion-item>
+					    <ion-input type="hidden" formControlName="id" [(ngModel)]="yourLoggedinId" required></ion-input>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+			<ion-row>
+	    		<ion-col col-12>
+	    			<ion-item>
+					    <ion-label>Email</ion-label>
+					    <ion-input type="email" formControlName="email" [(ngModel)]="yourLoggedinEmail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required></ion-input>
+
+					    <small [hidden]="updateForm.controls.email.valid || (updateForm.controls.email.pristine && !submitted)">
+					        <small  *ngIf="updateForm.controls.email.errors && updateForm.controls.email.errors.required">
+					            Email is required
+					        </small>
+					        <small  *ngIf="updateForm.controls.email.errors && updateForm.controls.email.errors.pattern">
+					            Email is invalid
+					        </small>
+					    </small>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+			<ion-row>
+	    		<ion-col col-12>
+	    			<button ion-button class="updateEmail" type="submit" [disabled]="!updateForm.valid">Update</button>
+	    		</ion-col>
+	    	</ion-row>
+		</form>
+
+		<div *ngIf="otpOption">
+		<!-- send otp verification code -->
+		<form (ngSubmit)="sendOtp($event)" [formGroup]="sendOtpForm">
+			<ion-row>
+	    		<ion-col col-12>
+	    			<ion-item>
+	    				<ion-label>Enter Number</ion-label>
+					    <ion-input type="number" formControlName="sentOtp" [(ngModel)]="yourSentOtp" required class="otp-input"></ion-input>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	    	<ion-row>
+	    		<ion-col col-12>
+					<button ion-button type="submit" block [disabled]="!sendOtpForm.valid">Send OTP</button>
+				</ion-col>
+			</ion-row>
+		</form>
+
+		<!-- otp form -->
+		<form (ngSubmit)="verifyOtp($event)" [formGroup]="otpForm">
+			<ion-row>
+	    		<ion-col col-3>
+	    			<ion-item>
+					    <ion-input type="number" formControlName="otpOne" [(ngModel)]="yourOtpOne" required class="otp-input"></ion-input>
+			  		</ion-item>
+	    		</ion-col>
+	    		<ion-col col-3>
+	    			<ion-item>
+					    <ion-input type="number" formControlName="otpTwo" [(ngModel)]="yourOtpTwo" required class="otp-input"></ion-input>
+			  		</ion-item>
+	    		</ion-col>
+	    		<ion-col col-3>
+	    			<ion-item>
+					    <ion-input type="number" formControlName="otpThree" [(ngModel)]="yourOtpThree" required class="otp-input"></ion-input>
+			  		</ion-item>
+	    		</ion-col>
+	    		<ion-col col-3>
+	    			<ion-item>
+					    <ion-input type="number" formControlName="otpFour" [(ngModel)]="yourOtpFour" required class="otp-input"></ion-input>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	    	<ion-row>
+	    		<ion-col col-12>
+					<button ion-button type="submit" block [disabled]="!otpForm.valid">Verify OTP</button>
+				</ion-col>
+			</ion-row>
+		</form>
+		</div>
+
+		<!-- delete account form -->
+		<form (ngSubmit)="deleteAccount($event)" [formGroup]="deleteForm">
+			<ion-row class="disp-none">
+	    		<ion-col col-12>
+	    			<ion-item>
+					    <ion-input type="hidden" formControlName="id" [(ngModel)]="yourLoggedinId" required></ion-input>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	    	<ion-row>
+	    		<ion-col col-12>
+					<button ion-button type="submit" clear block [disabled]="!deleteForm.valid">Delete my account</button>
+				</ion-col>
+			</ion-row>
+		</form>	
+
+		<ion-row class="disp-none">
+			<ion-col col-12>
+				<ion-item>
+				  	<ion-label>{{isToggled?'Torch On':'Torch Off'}}</ion-label>
+				  	<ion-toggle checked="false" (ionChange)="notify()"></ion-toggle>
+				</ion-item>
+			</ion-col>
+		</ion-row>
+
+		<button class="disp-none" ion-button (click)="toggleFlash()">Torch</button>
+
+	</ion-grid>
+
+
+
+</ion-content>

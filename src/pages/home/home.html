@@ -1,0 +1,90 @@
+<ion-header>
+  	<ion-navbar>
+    	<button ion-button menuToggle icon-only>
+          	<ion-icon name="menu"></ion-icon>
+      	</button>
+	    <ion-title>
+	      	Register to Ionic
+	    </ion-title>
+  	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<form (ngSubmit)="registerToApp($event)" [formGroup]="registerForm">
+		<ion-grid>
+	  		<ion-row>
+	    		<ion-col col-12>
+	    			<ion-item>
+			    		<ion-label>Name</ion-label>
+			    		<ion-input type="text" formControlName="name" [(ngModel)]="register_name" required></ion-input>
+
+			    		<small>
+    						<small [hidden]="registerForm.controls.name.valid || (registerForm.controls.name.pristine && !submitted)">
+        						*name required and min 5 characters
+    						</small>
+    					</small>
+	  				</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	  		<ion-row>
+	    		<ion-col col-12>
+	    			<ion-item>
+					    <ion-label>Email</ion-label>
+					    <ion-input type="email" formControlName="email" [(ngModel)]="register_email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required></ion-input>
+
+					    <small [hidden]="registerForm.controls.email.valid || (registerForm.controls.email.pristine && !submitted)">
+					        <small  *ngIf="registerForm.controls.email.errors && registerForm.controls.email.errors.required">
+					            Email is required
+					        </small>
+					        <small  *ngIf="registerForm.controls.email.errors && registerForm.controls.email.errors.pattern">
+					            Email is invalid
+					        </small>
+					    </small>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	  		<ion-row>
+	    		<ion-col col-12>
+	    			<ion-item>
+					    <ion-label>Password</ion-label>
+					    <ion-input type="password" formControlName="password" [(ngModel)]="register_password" required></ion-input>
+
+					    <small>
+					    	<small [hidden]="registerForm.controls.password.valid || (registerForm.controls.password.pristine && !submitted)">
+					        *password required and min 8 characters
+					    	</small>
+					    </small>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	  		<ion-row>
+	    		<ion-col col-12>
+	    			<ion-item>
+					    <ion-label>Confirm Password</ion-label>
+					    <ion-input type="password" formControlName="confirmpassword" [(ngModel)]="register_confirm_password" required></ion-input>
+
+					    <small>
+					    	<small [hidden]="registerForm.controls.confirmpassword.valid || (registerForm.controls.confirmpassword.pristine && !submitted)">
+					        *passwords do not match
+					    	</small>
+					    </small>
+			  		</ion-item>
+	    		</ion-col>
+	  		</ion-row>
+	  		<ion-row>
+	    		<ion-col col-12>
+	    			<button ion-button type="submit" block [disabled]="registerForm.controls.password.value !== registerForm.controls.confirmpassword.value || !registerForm.valid">Register</button>
+	    		</ion-col>
+	    	</ion-row>
+		</ion-grid>
+	</form>
+	
+	<ion-grid>
+  		<ion-row>
+    		<ion-col col-12 class="text-center">
+    			Already registered? <button ion-button (click)="gotoLogin()" clear>Login</button> now
+    		</ion-col>
+    	</ion-row>
+    </ion-grid>
+
+</ion-content>

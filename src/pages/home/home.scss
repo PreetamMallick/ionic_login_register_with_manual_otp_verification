@@ -1,0 +1,15 @@
+page-home {
+	form ion-item {
+		padding-left: 0 !important;
+	}
+	.text-center {
+		text-align: center;
+	}
+	.text-center button {
+		margin: 0;
+	    position: relative;
+	    top: -3px;
+	    padding-left: 5px;
+	    padding-right: 5px;
+	}
+}
